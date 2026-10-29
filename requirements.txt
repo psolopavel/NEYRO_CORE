@@ -1,0 +1,19 @@
+# NEYRO_CORE — зависимости (Python 3.10+)
+# Устанавливаются в окружение /ultralytics-env на сервере.
+
+# YOLO-инференс (ObjectCounter)
+ultralytics>=8.2
+
+# Видео/кадры
+opencv-python>=4.8
+numpy>=1.24
+
+# OCR штампа даты/времени на кадре (опционально, GPU→CPU fallback)
+easyocr>=1.7
+
+# БД
+mysql-connector-python>=8.0
+
+# Письма с результатами: xlsx-вложение + корневые сертификаты для SendLayer
+openpyxl>=3.1
+certifi
