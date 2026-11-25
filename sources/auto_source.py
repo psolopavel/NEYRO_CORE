@@ -431,13 +431,25 @@ class AutoSource(TaskSource):
         Камеры с блокировкой (type=7), без AutoCounting или без региона в
         self.vehicles не попадают — их не ждём.
         """
-        imei = next((v.imei for v in self.vehicles if v.camera_name == cam), None)
-        if imei is None:
+        clog = get_camera_logger(self.cfg.camera_log_dir, cam, SOURCE_AUTO, date_str)
+        if not self.cfg.mail_enabled:
+            clog.info("✉️  отчёт не ставится: mail.enabled=false в config.ini")
             return
-        cams = [v.camera_name for v in self.vehicles if v.imei == imei]
+        cam_l = cam.lower()
+        imei = next((v.imei for v in self.vehicles
+                     if v.camera_name.lower() == cam_l), None)
+        cams = [v.camera_name for v in self.vehicles if v.imei == imei] if imei else []
+        if not cams:
+            imei, _conf_cams = self.mailer._camera_car(cam)
+            if not imei:
+                clog.warning("✉️  отчёт: камера %s не найдена в discovery и trackers_conf",
+                             cam)
+                return
+            cams = [v.camera_name for v in self.vehicles if v.imei == imei]
+            if not cams:
+                cams = [cam]
         pending = [c for c in cams if not self.results.is_finished(date_str, c)]
         if pending:
-            get_camera_logger(self.cfg.camera_log_dir, cam, SOURCE_AUTO, date_str).info(
-                "✉️  отчёт по машине ждёт камеры: %s", ", ".join(pending))
+            clog.info("✉️  отчёт по машине ждёт камеры: %s", ", ".join(pending))
             return
         self.mailer.schedule_auto(imei, cams, date_str, cam)

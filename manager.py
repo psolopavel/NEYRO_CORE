@@ -77,6 +77,11 @@ class Manager:
     def run(self):
         logging.info("🚀 NEYRO_CORE manager запущен (max_workers=%d)",
                      self.cfg.max_workers)
+        mail_note = self.mailer.disabled_reason()
+        if mail_note:
+            logging.warning("✉️  %s", mail_note)
+        else:
+            logging.info("✉️  отправка писем включена (SendLayer, AI_ResultDeliveries)")
         # Восстановить зависшие задачи очереди.
         try:
             reclaimed = self.queue_store.reclaim_stale()

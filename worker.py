@@ -143,7 +143,8 @@ class Worker:
             return
         log.info("📤 [%s] загрузка видео на сервер", job.label)
         if transfer.upload_result_video(self.cfg, save_video_path,
-                                        job.camera_name, job.date_str):
+                                        job.camera_name, job.date_str,
+                                        kind=job.source):
             _silent_unlink(save_video_path)
             log.info("🗑️  [%s] локальное видео удалено", job.label)
         else:

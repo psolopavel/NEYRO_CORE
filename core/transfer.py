@@ -91,12 +91,17 @@ def compress_video(video_path: str, crf: int = 32,
 
 
 def upload_result_video(cfg, video_path: str, camera: str,
-                        date_str: str) -> bool:
-    """Загрузить обработанное видео в {storage_base}/{camera}_neyro/{date}_auto/."""
+                        date_str: str, kind: str = "auto") -> bool:
+    """Загрузить ролик в {storage_base}/{camera}_neyro/{date}_{kind}/.
+
+    kind=auto — автоподсчёт, kind=queue — запрос из очереди.
+    """
     if not os.path.exists(video_path):
         return False
+    if kind not in ("auto", "queue"):
+        kind = "auto"
     date_compact = date_str.replace("-", "")
-    remote_dir = f"{cfg.storage_base}/{camera}_neyro/{date_compact}_auto"
+    remote_dir = f"{cfg.storage_base}/{camera}_neyro/{date_compact}_{kind}"
 
     mkdir_cmd = ["ssh", f"{cfg.storage_user}@{cfg.storage_host}",
                  f"mkdir -p {shlex.quote(remote_dir)}"]

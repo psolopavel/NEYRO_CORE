@@ -134,7 +134,8 @@ python tools/send_reports.py --once                              # один пр
 mysql ... < /home/NEYRO_CORE/sql/AI_CountingQueue.sql
 mysql ... < /home/NEYRO_CORE/sql/AI_ResultDeliveries.sql
 
-# 4) Заполнить config.ini (DB_PASS, [mail] enabled = true и т.д.)
+# 4) Заполнить config.ini (DB_PASS и т.д.)
+#    [mail] enabled = true  — иначе письма не отправляются (в manager.log будет предупреждение)
 
 # 5) Запуск демона
 /ultralytics-env/bin/python /home/NEYRO_CORE/manager.py
